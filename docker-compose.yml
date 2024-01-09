@@ -3,7 +3,7 @@ services:
 
   central-library:
     container_name: central-library
-    build: ./central
+    image: sansansanya/central-library
     ports:
       - "8000:8000"
     volumes:
@@ -14,7 +14,7 @@ services:
 
   library-ns:
     container_name: library-ns
-    build: ./local
+    image: sansansanya/local-library
     command: uvicorn main:app --reload --host 0.0.0.0 --port 8021
     ports:
       - "8021:8021"
@@ -28,7 +28,7 @@ services:
 
   library-bg:
     container_name: library-bg
-    build: ./local
+    image: sansansanya/local-library
     command: uvicorn main:app --reload --host 0.0.0.0 --port 8011
     ports:
       - "8011:8011"
@@ -42,7 +42,7 @@ services:
 
   library-nis:
     container_name: library-nis
-    build: ./local
+    image: sansansanya/local-library
     command: uvicorn main:app --reload --host 0.0.0.0 --port 8018
     ports:
       - "8018:8018"
@@ -52,46 +52,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      - DB=nis_db
-
-  client-ns:
-    build: ./frontend
-    environment:
-      - PORT=3021
-    ports:
-      - "3021:3021"
-    volumes:
-      - ./frontend/src:/app/src
-    depends_on:
-      - library-ns
-    stdin_open: true
-    tty: true
-
-  client-bg:
-    build: ./frontend
-    environment:
-      - PORT=3011
-    ports:
-      - "3011:3011"
-    volumes:
-      - ./frontend/src:/app/src
-    depends_on:
-      - library-bg
-    stdin_open: true
-    tty: true
-
-  client-nis:
-    build: ./frontend
-    environment:
-      - PORT=3018
-    ports:
-      - "3018:3018"
-    volumes:
-      - ./frontend/src:/app/src
-    depends_on:
-      - library-nis
-    stdin_open: true
-    tty: true
+      - DB=nis_d
 
   postgres:
     image: postgres

@@ -15,7 +15,6 @@ def borrow(db: Session, data: LoanData) -> Loan:
     db.add(loan)
     db.commit()
     db.refresh(loan)
-    print(loan.__dict__)
     return loan
 
 

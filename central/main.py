@@ -20,7 +20,6 @@ def get_db():
 
 @app.post("/user", status_code=201)
 async def register_user_route(data: RegisterData, db: Session = Depends(get_db)):
-    print(data)
     if exists(db, data.government_id):
         raise HTTPException(status_code=409, detail="User already exists.")
     register_user(db, data)

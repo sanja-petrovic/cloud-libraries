@@ -1,0 +1,33 @@
+name: Build and push Docker images
+
+on:
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+    - name: Build the central library Docker image
+      run: docker build -t sansansanya/central-library:latest .
+      
+    - name: Build the local library Docker image
+      run: docker build -t sansansanya/local-library:latest .
+
+    - name: Push the central library Docker image
+      run: docker push sansansanya/central-library:latest
+
+    - name: Push the local library Docker image
+      run: docker push sansansanya/local-library:latest
