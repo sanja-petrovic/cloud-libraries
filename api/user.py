@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 from schemas import User
-from models import UserData
+from models import RegisterData
 from uuid import UUID
 
 
-def register_user(db: Session, user: UserData):
+def register_user(db: Session, user: RegisterData):
     db_user = User(
         first_name=user.first_name,
         last_name=user.last_name,
