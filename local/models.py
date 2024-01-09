@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from datetime import date
 
 
 class RegisterData(BaseModel):
@@ -15,7 +14,7 @@ class BookData(BaseModel):
     isbn: str
 
 
-class BorrowData(BaseModel):
+class LoanData(BaseModel):
     title: str
     author: str
     isbn: str

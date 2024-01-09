@@ -1,21 +1,104 @@
 version: '3'
 services:
+
   central-library:
     container_name: central-library
-    build: ./api
+    build: ./central
     ports:
       - "8000:8000"
     volumes:
-      - ./api:/app
+      - ./central:/app
     depends_on:
       postgres:
         condition: service_healthy
+
+  library-ns:
+    container_name: library-ns
+    build: ./local
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8021
+    ports:
+      - "8021:8021"
+    volumes:
+      - ./local:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB=ns_db
+
+  library-bg:
+    container_name: library-bg
+    build: ./local
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8011
+    ports:
+      - "8011:8011"
+    volumes:
+      - ./local:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB=bg_db
+
+  library-nis:
+    container_name: library-nis
+    build: ./local
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8018
+    ports:
+      - "8018:8018"
+    volumes:
+      - ./local:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB=nis_db
+
+  client-ns:
+    build: ./frontend
+    environment:
+      - PORT=3021
+    ports:
+      - "3021:3021"
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - library-ns
+    stdin_open: true
+    tty: true
+
+  client-bg:
+    build: ./frontend
+    environment:
+      - PORT=3011
+    ports:
+      - "3011:3011"
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - library-bg
+    stdin_open: true
+    tty: true
+
+  client-nis:
+    build: ./frontend
+    environment:
+      - PORT=3018
+    ports:
+      - "3018:3018"
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - library-nis
+    stdin_open: true
+    tty: true
+
   postgres:
     image: postgres
     container_name: postgres
     environment:
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=db
+      - POSTGRES_MULTIPLE_DATABASES=central_db,postgres:ns_db,postgres:bg_db,postgres:nis_db,postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -23,6 +106,8 @@ services:
       retries: 5
     volumes:
       - data:/var/lib/postgresql/data
+      - ./docker-postgresql-multiple-databases:/docker-entrypoint-initdb.d
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
@@ -35,6 +120,7 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=postgres
     volumes:
       - pgadmin:/var/lib/pgadmin
+  
 volumes:
   data:
   pgadmin:
