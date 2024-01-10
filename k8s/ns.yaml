@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ns-pod
+spec:
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: my-pvc
+  containers:
+    - name: ns-library
+      image: sansansanya/local-library
+      command:
+        [
+          "uvicorn",
+          "main:app",
+          "--reload",
+          "--host",
+          "0.0.0.0",
+          "--port",
+          "8021",
+        ]
+      ports:
+        - containerPort: 8021
+          name: "ns-library"
+      env:
+        - name: DB
+          value: ns_db
+    - name: ns-db
+      image: postgres
+      env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_DB
+          value: ns_db
+      ports:
+        - containerPort: 5432
+      volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data

@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: central-pod
+spec:
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: my-pvc
+  containers:
+    - name: postgres
+      image: postgres
+      env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_DB
+          value: central_db
+      ports:
+        - containerPort: 5432
+      volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+    - name: central-library
+      image: sansansanya/central-library
+      command:
+        [
+          "uvicorn",
+          "main:app",
+          "--reload",
+          "--host",
+          "0.0.0.0",
+          "--port",
+          "8021",
+        ]
+      ports:
+        - containerPort: 8000
+          name: "central-library"
