@@ -1,41 +1,50 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: nis-pod
 spec:
-  volumes:
-    - name: data-nis
-      persistentVolumeClaim:
-        claimName: my-pvc
-  containers:
-    - name: postgres
-      image: sansansanya/cloud-db:latest
-      env:
-        - name: POSTGRES_PASSWORD
-          value: postgres
-        - name: POSTGRES_DB
-          value: nis_db
-      ports:
-        - containerPort: 5432
-      volumeMounts:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nis-pod
+  template:
+    metadata:
+      labels:
+        app: nis-pod
+    spec:
+      volumes:
         - name: data-nis
-          mountPath: /var/lib/postgresql/data
-    - name: nis-library
-      image: sansansanya/local-library:k8s
-      command:
-        [
-          "uvicorn",
-          "main:app",
-          "--reload",
-          "--host",
-          "0.0.0.0",
-          "--port",
-          "8018",
-        ]
-      ports:
-        - containerPort: 8018
-      env:
-        - name: DB_HOST
-          value: localhost
-        - name: DB
-          value: nis_db
+          persistentVolumeClaim:
+            claimName: my-pvc
+      containers:
+        - name: nis-db
+          image: sansansanya/cloud-db:latest
+          env:
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: nis_db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data-nis
+              mountPath: /var/lib/postgresql/data
+        - name: nis-library
+          image: sansansanya/local-library:k8s
+          command:
+            [
+              "uvicorn",
+              "main:app",
+              "--reload",
+              "--host",
+              "0.0.0.0",
+              "--port",
+              "8018",
+            ]
+          ports:
+            - containerPort: 8018
+          env:
+            - name: DB_HOST
+              value: localhost
+            - name: DB
+              value: nis_db

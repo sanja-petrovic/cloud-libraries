@@ -1,39 +1,48 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: central-pod
 spec:
-  volumes:
-    - name: data-central
-      persistentVolumeClaim:
-        claimName: my-pvc
-  containers:
-    - name: postgres
-      image: sansansanya/cloud-db:latest
-      env:
-        - name: POSTGRES_PASSWORD
-          value: postgres
-        - name: POSTGRES_DB
-          value: central_db
-      ports:
-        - containerPort: 5432
-      volumeMounts:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: central-pod
+  template:
+    metadata:
+      labels:
+        app: central-pod
+    spec:
+      volumes:
         - name: data-central
-          mountPath: /var/lib/postgresql/data
-    - name: central-library
-      image: sansansanya/central-library:k8s
-      command:
-        [
-          "uvicorn",
-          "main:app",
-          "--reload",
-          "--host",
-          "0.0.0.0",
-          "--port",
-          "8000",
-        ]
-      ports:
-        - containerPort: 8000
-      env:
-        - name: DB_HOST
-          value: localhost
+          persistentVolumeClaim:
+            claimName: my-pvc
+      containers:
+        - name: central-db
+          image: sansansanya/cloud-db:latest
+          env:
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: central_db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data-central
+              mountPath: /var/lib/postgresql/data
+        - name: central-library
+          image: sansansanya/central-library:k8s
+          command:
+            [
+              "uvicorn",
+              "main:app",
+              "--reload",
+              "--host",
+              "0.0.0.0",
+              "--port",
+              "8000",
+            ]
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_HOST
+              value: localhost
