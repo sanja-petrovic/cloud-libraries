@@ -2,9 +2,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import time
+import os
 
-time.sleep(30)
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@postgres:5432/central_db"
+time.sleep(120)
+SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:postgres@{os.environ["DB_HOST"] or "postgres"}:5432/central_db'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

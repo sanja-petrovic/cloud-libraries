@@ -1,18 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: minimal-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: my-ingress
+  labels:
+    name: my-ingress
 spec:
   rules:
     - host: library.cloud.io
-    - http:
+      http:
         paths:
-          - path: /central
-            pathType: Prefix
+          - pathType: Prefix
+            path: "/central"
             backend:
               service:
-                name: central-library-service
+                name: central-service
                 port:
                   number: 8000

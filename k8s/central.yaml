@@ -21,7 +21,7 @@ spec:
         - name: data
           mountPath: /var/lib/postgresql/data
     - name: central-library
-      image: sansansanya/central-library
+      image: sansansanya/central-library:k8s
       command:
         [
           "uvicorn",
@@ -30,8 +30,10 @@ spec:
           "--host",
           "0.0.0.0",
           "--port",
-          "8021",
+          "8000",
         ]
       ports:
         - containerPort: 8000
-          name: "central-library"
+      env:
+        - name: DB_HOST
+          value: localhost
