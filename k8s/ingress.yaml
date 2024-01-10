@@ -16,3 +16,24 @@ spec:
                 name: central-service
                 port:
                   number: 8000
+          - pathType: Prefix
+            path: "/ns"
+            backend:
+              service:
+                name: ns-service
+                port:
+                  number: 8021
+          - pathType: Prefix
+            path: "/nis"
+            backend:
+              service:
+                name: nis-service
+                port:
+                  number: 8018
+          - pathType: Prefix
+            path: "/bg"
+            backend:
+              service:
+                name: bg-service
+                port:
+                  number: 8011

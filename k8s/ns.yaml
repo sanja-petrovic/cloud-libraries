@@ -4,12 +4,24 @@ metadata:
   name: ns-pod
 spec:
   volumes:
-    - name: data
+    - name: data-ns
       persistentVolumeClaim:
         claimName: my-pvc
   containers:
+    - name: ns-db
+      image: sansansanya/cloud-db:latest
+      env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_DB
+          value: ns_db
+      ports:
+        - containerPort: 5433
+      volumeMounts:
+        - name: data-ns
+          mountPath: /var/lib/postgresql/data
     - name: ns-library
-      image: sansansanya/local-library
+      image: sansansanya/local-library:k8s
       command:
         [
           "uvicorn",
@@ -22,19 +34,8 @@ spec:
         ]
       ports:
         - containerPort: 8021
-          name: "ns-library"
       env:
+        - name: DB_HOST
+          value: localhost
         - name: DB
           value: ns_db
-    - name: ns-db
-      image: postgres
-      env:
-        - name: POSTGRES_PASSWORD
-          value: postgres
-        - name: POSTGRES_DB
-          value: ns_db
-      ports:
-        - containerPort: 5432
-      volumeMounts:
-        - name: data
-          mountPath: /var/lib/postgresql/data
