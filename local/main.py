@@ -2,13 +2,17 @@ from fastapi import FastAPI, HTTPException, Depends
 from database import SessionLocal, engine, Base
 from models import BookData, LoanData, RegisterData
 from book import add_book
-from book import exists
+from book import exists, get_book_by_isbn
 from borrow import borrow, return_book
 from sqlalchemy.orm import Session
 from uuid import UUID
 import requests
 
-app = FastAPI()
+import os
+
+app = FastAPI(
+    openapi_prefix=f"/{os.environ['OPENAPI_PREFIX'] or 'docs'}",
+)
 Base.metadata.create_all(bind=engine)
 
 central_api = "http://central-library:8000"
@@ -53,6 +57,12 @@ async def borrow_book_route(data: LoanData, db: Session = Depends(get_db)):
 def can_borrow(user_id: UUID):
     response = requests.get(url=f"{central_api}/user/{user_id}/check", timeout=5).json()
     return response["allowed"]
+
+
+@app.get("/book/{isbn}", status_code=200)
+async def get_by_isbn(isbn: str, db: Session = Depends(get_db)):
+    book = get_book_by_isbn(db, isbn)
+    return book.__dict__
 
 
 @app.put("/return/{id}", status_code=200)

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nis-service
+spec:
+  selector:
+    app: nis-pod
+  ports:
+    - protocol: TCP
+      port: 8018
+      targetPort: 8018

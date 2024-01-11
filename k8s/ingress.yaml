@@ -4,34 +4,37 @@ metadata:
   name: my-ingress
   labels:
     name: my-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
     - host: library.cloud.io
       http:
         paths:
-          - pathType: Prefix
-            path: "/central"
+          - path: /central(/|$)(.*)
+            pathType: Prefix
             backend:
               service:
                 name: central-service
                 port:
                   number: 8000
           - pathType: Prefix
-            path: "/ns"
+            path: /ns(/|$)(.*)
             backend:
               service:
                 name: ns-service
                 port:
                   number: 8021
           - pathType: Prefix
-            path: "/nis"
+            path: /nis(/|$)(.*)
             backend:
               service:
                 name: nis-service
                 port:
                   number: 8018
           - pathType: Prefix
-            path: "/bg"
+            path: /bg(/|$)(.*)
             backend:
               service:
                 name: bg-service

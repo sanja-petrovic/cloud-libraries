@@ -30,7 +30,7 @@ spec:
             - name: data-bg
               mountPath: /var/lib/postgresql/data
         - name: bg-library
-          image: sansansanya/local-library:k8s
+          image: sansansanya/local-library:k8s1.2.1
           command:
             [
               "uvicorn",
@@ -48,3 +48,5 @@ spec:
               value: localhost
             - name: DB
               value: bg_db
+            - name: OPENAPI_PREFIX
+              value: bg
