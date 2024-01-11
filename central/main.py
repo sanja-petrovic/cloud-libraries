@@ -12,7 +12,7 @@ from user import exists
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-app = FastAPI(openapi_prefix="/central")
+app = FastAPI()
 Base.metadata.create_all(bind=engine)
 
 

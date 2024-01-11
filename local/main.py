@@ -10,9 +10,7 @@ import requests
 import json
 import os
 
-app = FastAPI(
-    openapi_prefix=f"/{os.getenv('OPENAPI_PREFIX', 'docs')}",
-)
+app = FastAPI()
 Base.metadata.create_all(bind=engine)
 
 central_api = "http://central-library:8000"
