@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-docker
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
@@ -21,13 +21,13 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
     - name: Build the central library Docker image
-      run: docker build -t sansansanya/central-library:docker ./central
+      run: docker build -t sansansanya/central-library:latest ./central
       
     - name: Build the local library Docker image
-      run: docker build -t sansansanya/local-library:docker ./local
+      run: docker build -t sansansanya/local-library:latest ./local
 
     - name: Push the central library Docker image
-      run: docker push sansansanya/central-library:docker
+      run: docker push sansansanya/central-library:latest
 
     - name: Push the local library Docker image
-      run: docker push sansansanya/local-library:docker
+      run: docker push sansansanya/local-library:latest
