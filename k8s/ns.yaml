@@ -15,10 +15,10 @@ spec:
       volumes:
         - name: data-ns
           persistentVolumeClaim:
-            claimName: my-pvc
+            claimName: pg-pvc
       containers:
         - name: ns-db
-          image: sansansanya/cloud-db:latest
+          image: sansansanya/cloud-db:k8s1.1
           env:
             - name: POSTGRES_PASSWORD
               value: postgres
