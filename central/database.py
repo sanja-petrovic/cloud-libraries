@@ -5,7 +5,9 @@ import time
 import os
 
 time.sleep(30)
-SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:postgres@{os.environ["DB_HOST"] or "postgres"}:5432/central_db'
+SQLALCHEMY_DATABASE_URL = (
+    f'postgresql://postgres:postgres@{os.getenv("DB_HOST", "postgres")}:5432/central_db'
+)
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

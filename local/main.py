@@ -11,7 +11,7 @@ import json
 import os
 
 app = FastAPI(
-    openapi_prefix=f"/{os.environ['OPENAPI_PREFIX'] or 'docs'}",
+    openapi_prefix=f"/{os.getenv('OPENAPI_PREFIX', 'docs')}",
 )
 Base.metadata.create_all(bind=engine)
 
