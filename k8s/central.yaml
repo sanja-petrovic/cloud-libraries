@@ -37,7 +37,7 @@ spec:
                     "/usr/local/bin/pg_ctl stop -D /var/lib/postgresql/data -w -t 60 -m fast",
                   ]
         - name: central-library
-          image: sansansanya/central-library:k8s1.2.1
+          image: sansansanya/central-library:k8s1.2.2
           command:
             [
               "uvicorn",

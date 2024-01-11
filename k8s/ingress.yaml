@@ -16,7 +16,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: central-service
+                name: central-library
                 port:
                   number: 8000
           - pathType: Prefix
@@ -30,7 +30,7 @@ spec:
             path: /nis(/|$)(.*)
             backend:
               service:
-                name: nis-service
+                name: nis-library
                 port:
                   number: 8018
           - pathType: Prefix

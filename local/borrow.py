@@ -26,3 +26,7 @@ def return_book(db: Session, loan_id: UUID) -> Loan:
     query.update({"returned": datetime.now()})
     db.commit()
     return loan
+
+
+def get_loans_by_user(db: Session, user_id: UUID):
+    return db.query(Loan).filter(Loan.user_id == user_id).all()

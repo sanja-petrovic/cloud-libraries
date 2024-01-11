@@ -3,11 +3,11 @@ from database import SessionLocal, engine, Base
 from models import BookData, LoanData, RegisterData
 from book import add_book
 from book import exists, get_book_by_isbn
-from borrow import borrow, return_book
+from borrow import borrow, return_book, get_loans_by_user
 from sqlalchemy.orm import Session
 from uuid import UUID
 import requests
-
+import json
 import os
 
 app = FastAPI(
@@ -62,7 +62,9 @@ def can_borrow(user_id: UUID):
 @app.get("/book/{isbn}", status_code=200)
 async def get_by_isbn(isbn: str, db: Session = Depends(get_db)):
     book = get_book_by_isbn(db, isbn)
-    return book.__dict__
+    if book:
+        return book.__dict__
+    raise HTTPException(status_code=404, detail="Book not found.")
 
 
 @app.put("/return/{id}", status_code=200)
@@ -74,3 +76,10 @@ async def return_book_route(id: UUID, db: Session = Depends(get_db)):
     return {
         "message": "User did not return book, possibly because it's been returned already."
     }
+
+
+@app.get("/user/{id}/loans")
+async def get_user_loans(id: UUID, db: Session = Depends(get_db)):
+    loans = get_loans_by_user(db, id)
+    print(loans)
+    return loans

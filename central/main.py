@@ -41,7 +41,9 @@ async def check_user_route(id: UUID, db: Session = Depends(get_db)):
 @app.get("/user/{gov_id}", status_code=200)
 async def get_by_gov_id(gov_id: str, db: Session = Depends(get_db)):
     user = get_user_by_government_id(db, gov_id)
-    return user.__dict__
+    if user:
+        return user.__dict__
+    raise HTTPException(status_code=404, detail="User not found.")
 
 
 @app.put("/user/{id}/borrow", status_code=200)

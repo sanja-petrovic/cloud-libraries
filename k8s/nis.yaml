@@ -30,7 +30,7 @@ spec:
             - name: data-nis
               mountPath: /var/lib/postgresql/data
         - name: nis-library
-          image: sansansanya/local-library:k8s1.2.1
+          image: sansansanya/local-library:k8s1.2.6
           command:
             [
               "uvicorn",
