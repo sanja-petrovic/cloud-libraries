@@ -3,7 +3,7 @@ services:
 
   central-library:
     container_name: central-library
-    image: sansansanya/central-library
+    image: sansansanya/central-library:2.2.0
     ports:
       - "8000:8000"
     volumes:
@@ -14,7 +14,7 @@ services:
 
   library-ns:
     container_name: library-ns
-    image: sansansanya/local-library
+    image: sansansanya/local-library:2.2.0
     command: uvicorn main:app --reload --host 0.0.0.0 --port 8021
     ports:
       - "8021:8021"
@@ -28,7 +28,7 @@ services:
 
   library-bg:
     container_name: library-bg
-    image: sansansanya/local-library
+    image: sansansanya/local-library:2.2.0
     command: uvicorn main:app --reload --host 0.0.0.0 --port 8011
     ports:
       - "8011:8011"
@@ -42,7 +42,7 @@ services:
 
   library-nis:
     container_name: library-nis
-    image: sansansanya/local-library
+    image: sansansanya/local-library:2.2.0
     command: uvicorn main:app --reload --host 0.0.0.0 --port 8018
     ports:
       - "8018:8018"
@@ -72,4 +72,3 @@ services:
   
 volumes:
   data:
-  pgadmin:

@@ -11,8 +11,10 @@ from user import (
 from user import exists
 from sqlalchemy.orm import Session
 from uuid import UUID
+import os
 
-app = FastAPI()
+root_path = os.environ.get("ROOT_PATH", None)
+app = FastAPI(openapi_prefix=f"/{root_path}") if root_path else FastAPI()
 Base.metadata.create_all(bind=engine)
 
 

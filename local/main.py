@@ -7,10 +7,10 @@ from borrow import borrow, return_book, get_loans_by_user
 from sqlalchemy.orm import Session
 from uuid import UUID
 import requests
-import json
 import os
 
-app = FastAPI()
+root_path = os.environ.get("ROOT_PATH", None)
+app = FastAPI(openapi_prefix=f"/{root_path}") if root_path else FastAPI()
 Base.metadata.create_all(bind=engine)
 
 central_api = "http://central-library:8000"
